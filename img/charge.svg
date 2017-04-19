@@ -1,0 +1,16 @@
+<svg width="254.20313" height="375.75" xmlns="http://www.w3.org/2000/svg">
+ <!--Unicode Character 'RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK' (U+00BB)-->
+
+ <g>
+  <title>background</title>
+  <rect fill="none" id="canvas_background" height="377.75" width="256.20313" y="-1" x="-1"/>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <g transform="rotate(-90, 128.016, 251.086)" id="svg_1">
+   <g id="svg_2">
+    <path fill="#ffffff" id="svg_3" d="m202.203079,251.172958l-54.947235,79.040878l-25.653618,0l45.240471,-79.040878l-45.240471,-79.214172l25.653618,0l54.947235,79.214172zm-67.773987,0l-54.94738,79.040878l-25.65361,0l45.067162,-79.040878l-45.067162,-79.214172l25.65361,0l54.94738,79.214172z"/>
+   </g>
+  </g>
+ </g>
+</svg>

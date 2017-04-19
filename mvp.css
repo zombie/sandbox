@@ -1,0 +1,488 @@
+
+html, body {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: #269;
+  font-size: 1vh;
+  cursor: grab;
+  transition: background .5s, transform .1s;
+}
+body, input {
+  font-weight: bold;
+  font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+  font-family: Segoe UI, sans-serif;
+  font-family: serif;
+}
+@media (max-aspect-ratio: 4/3) {
+  html, body {
+    font-size: calc(1vw * .75);
+  }
+}
+#board {
+  position: absolute;
+  top: calc(50% - 48rem);
+  left: calc(50% - 64rem);
+  height: 96rem;
+  width: 128rem;
+  box-sizing: border-box;
+  transition: transform .1s;
+}
+.gametype {
+  font-family: Segoe UI, sans-serif;
+  font-weight: normal;
+}
+#board #lines {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #269;
+  background-image: url("./img/board.svg");
+  background-size: 100% 100%;
+  transition: filter .3s, -webkit-filter .3s;
+}
+#board>div {
+  perspective: 2000px;
+  perspective-origin: bottom;
+}
+.bounds {
+  position: absolute;
+  top: calc(48rem - 4px);
+  left: calc(64rem - 4px);
+  width: 0;
+  height: 0;
+  transition: transform ease-out .7s;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+.attack2 {
+  z-index: 999999;
+  animation: .25s ease-out 0s 2 alternate forwards projectile;
+}
+.back {
+  display: block;
+  position: absolute;
+  top: -16rem;
+  left: -12rem;
+  width: 24rem;
+  height: 32rem;
+  transition: transform ease-out .7s;
+  background: url(img/back.png);
+  background-size: 100% 100%;
+  background-position: 0% 0%;
+  border-radius: 2.5rem;
+  box-sizing: border-box;
+  border: 2px solid black;
+  box-shadow: 0 0 3px black;
+  backface-visibility: hidden;
+}
+ul {
+  display: block;
+  position: absolute;
+  top: -16rem;
+  left: -12rem;
+  width: 24rem;
+  height: 32rem;
+  transition: transform ease-out .7s, border-radius .5s;
+  background-size: calc(100% + 4px) calc(100% + 4px);
+  background-position: -2px -2px;
+  line-height: 1;
+  margin: 0;
+  border-radius: 2.5rem;
+  overflow: visible;
+  padding: 2px;
+  box-sizing: border-box;
+  border: 2px solid black;
+  will-change: tranform, transition;
+  box-shadow: 0 0 3px black;
+  backface-visibility: hidden;
+  pointer-events: auto;
+}
+ul.inPlay, ul.isPower {
+  border: 5px double rgba(222,222,222,.5);
+}
+ul.inPlay>.rim, ul.isPower>.rim {
+  top: 0;
+  left: 0;
+  position: absolute;
+  border-radius: 100%;
+  width: calc(100% - 12px);
+  height: calc(100% - 12px);
+  border: 6px double rgba(0,0,0,.5);
+}
+ul.inPlay>.rim .rim, ul.isPower>.rim .rim {
+  top: 0;
+  left: 0;
+  position: absolute;
+  border-radius: 100%;
+  width: 100%;
+  height: calc(100% - 7px);
+  border-bottom: 6px double rgba(99,99,99,.5);
+  border-bottom: 6px double rgba(0,0,0,.5);
+}
+ul.green {
+  box-shadow: 0 -2px 4px 6px #7f3;
+}
+ul.replace {
+  box-shadow: 0 -1px 3px 5px red;
+}
+ul.appear {
+  animation: appear .5s;
+}
+ul.discard {
+  animation: appear .5s reverse forwards;
+}
+ul.discard2 {
+  animation: appear 1s reverse forwards;
+}
+ul.inPlay:not(.isHero) {
+  border-radius: 50%;
+}
+ul.isHero, .isHero .rim {
+  border-radius: 2.5rem !important;
+  border-top-left-radius: 50% 50% !important;
+  border-top-right-radius: 50% 50% !important;
+}
+ul.summon {
+  animation: enbiggen .5s;
+}
+ul.death {
+  animation: enbiggen .5s reverse forwards;
+}
+
+.inPlay .cardText {
+  opacity: 0;
+  transition: opacity .5s;
+}
+.cardText {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 40%;
+  opacity: .8;
+  border-width: 0;
+  border-image-slice: 33 fill;
+  border-image-width: 3.8rem;
+  border-image-outset: 0;
+  border-image-repeat: stretch;
+  border-image-source: url("./img/topaz.svg");
+  -webkit-filter: hue-rotate(220deg) saturate(30%);
+  filter: hue-rotate(220deg) saturate(30%);
+}
+.cardText span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 72%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  text-align: center;
+  font-family: Segoe UI, sans-serif;
+  font-weight: normal;
+  color: white;
+}
+.stealth {
+  opacity: .2;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background: url(img/stealth.svg);
+  background-size: 100% 100%;
+  background-position: 20% 0%;
+}
+
+.inPlay .charge {
+  opacity: 0;
+  top: -1000%;
+}
+.charge {
+  opacity: .6;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background: url(img/charge.svg);
+  background-size: 100% 100%;
+  background-position: 0% 0%;
+  transition: top 5s, opacity 1s;
+  filter: drop-shadow(1px 1px 1px black);
+  -webkit-filter: drop-shadow(1px 1px 1px black);
+}
+.inPlay.taunt, .inPlay.taunt .rim {
+  border-top-left-radius: 2.5rem !important;
+  border-top-right-radius: 2.5rem !important;
+}
+ul.inPlay .taunt {
+  opacity: 0;
+  top: 3%;
+}
+ul .taunt {
+  opacity: .4;
+  top: 8%;
+  left: 6%;
+  width: 88%;
+  height: 88%;
+  position: absolute;
+  background: url(img/taunt.svg);
+  background-size: 100% 100%;
+  background-position: 0% 0%;
+  transition: top 2s, opacity 2s;
+  filter: drop-shadow(1px 1px 1px black);
+  -webkit-filter: drop-shadow(1px 1px 1px black);
+}
+.hurt {
+  position: absolute;
+  top: calc(50% - 6rem);
+  left: calc(50% - 6rem);
+  width: 12rem;
+  height: 12rem;
+  background: yellow;
+  transform: rotate(70deg);
+  box-shadow: 0 0 2px 4px red;
+}
+.hurt div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 12rem;
+  height: 12rem;
+  color: red;
+  font-size: 8rem;
+  background: yellow;
+  text-align: center;
+  line-height: 1.2;
+  transform: rotate(-45deg);
+}
+.stat {
+  font-family: serif;
+  position: absolute;
+  width: 5rem;
+  height: 5rem;
+  color: white;
+  cursor: default;
+  font-size: 6rem;
+  line-height: .75;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 5rem;
+  box-shadow: 0 0 4px black;
+  border: 2px solid rgba(255,255,255,.8);
+  transition: top .5s, left .5s, bottom .5s, right .5s;
+  text-shadow: -2px -2px 0 rgba(0,0,0,.5), 2px -2px 0 rgba(0,0,0,.5), -2px 2px 0 rgba(0,0,0,.5), 2px 2px 0 rgba(0,0,0,.5);
+}
+.stat.cost {
+  top: -.4rem;
+  left: -.4rem;
+  background: rgba(0,0,177,.7);
+}
+.stat.health {
+  right: -.4rem;
+  bottom: -.4rem;
+  background: rgba(177,0,0,.7);
+}
+.stat.atk {
+  left: -.4rem;
+  bottom: -.4rem;
+  background: rgba(177,177,0,.7);
+}
+.inPlay:not(.isHero) .stat.health, .inPlay .stat.atk {
+  bottom: 3rem;
+}
+.isPower .stat.cost {
+  top: -3rem;
+  left: calc(50% - 3rem);
+  border: 2px solid white;
+  transform: scale(1.1, 1.3);
+}
+
+#board > div {
+  position: absolute;
+}
+.battle {
+  animation: rumble .95s;
+}
+#arrow {
+  position: absolute;
+  height: 6rem;
+  margin-top: -3rem;
+  transform-origin: left;
+  background-image: repeating-linear-gradient(to right, transparent 0, transparent 4rem, #e00 4rem, #e00 15rem);
+  animation: ants 10s infinite linear;
+  pointer-events: none;
+  z-index: 9000;
+}
+#arrow div {
+  pointer-events: none;
+  position: absolute;
+  right: -2.9rem;
+  top: -2.9rem;
+	width: 0;
+	height: 0;
+	border-top: 6rem solid transparent;
+	border-bottom: 6rem solid transparent;
+	border-left: 6rem solid #e00;
+  cursor: none;
+}
+#vector {
+  height: 10rem;
+  position: relative;
+  /*border: 1px solid gray;*/
+  transform-origin: left;
+  margin-top: -5rem;
+  z-index: 9000;
+}
+#vector>div {
+  position: absolute;
+  width: 10rem;
+  height: 10rem;
+  background: url(img/cart/101a.png);
+  background-position: 60rem;
+  background-size: 60rem 10rem;
+  animation: projectile ease-in-out .6s,
+      sprited steps(6) .3s infinite;
+}
+@keyframes ants {
+  from { background-position: 100% }
+}
+@keyframes sprited {
+  from { background-position: 0 }
+}
+@keyframes projectile {
+  from { transform: translate(0, 0) }
+}
+@keyframes ants {
+  from { background-position: -15rem }
+}
+@keyframes appear {
+  0% { opacity: 0; }
+  40% { opacity: 1; -webkit-filter: invert(100%); filter: invert(100%); }
+  100% { -webkit-filter: invert(0%); filter: invert(0%); }
+}
+@keyframes enbiggen {
+  from { transform: scale(.1) }
+}
+@keyframes rumble {
+  29% { transform: translate( 0px,  0px) }
+  30% { transform: translate(-3px, -9px) }
+  50% { transform: translate( 2px,  6px) }
+  70% { transform: translate(-1px, -3px) }
+  90% { transform: translate( 0px,  0px) }
+}
+@keyframes shroom {
+  to { -webkit-filter: hue-rotate(720deg) }
+}
+@keyframes firesmash {
+  40% { opacity: 1 }
+  60% { opacity: 1 }
+  to { background-position: 0 0; opacity: 0 }
+}
+body.firesmash .firesmash {
+  transition: opacity .1s;
+  position: relative;
+  left: calc(50% - 55rem);
+  top: calc(50% - 30rem);
+  width: 120rem;
+  height: 30rem;
+  opacity: 0;
+  z-index: 999;
+  mix-blend-mode: difference;
+  background-image: url(img/firesmash.png);
+  background-size:  3600rem 30rem;
+  background-position: 3600rem 0;
+  animation: firesmash steps(30) 1.5s forwards;
+}
+
+body.shroom {
+  animation: shroom ease-in-out 45s infinite;
+}
+body.darken #board #lines {
+  background-color: initial;
+}
+body.darken ul:not(.mulligan), body.darken>#board>div>img, body.darken #lines, body.darken .turnEnd {
+  filter: brightness(.7) blur(2px) saturate(.7);
+  -webkit-filter: brightness(.7) blur(2px) saturate(.7);
+}
+body.darken {
+  background: #035;
+}
+body.gameover .bounds, body.gameover>#board>div>img, body.gameover #lines, body.gameover .stat, body.gameover button {
+  filter: brightness(1.4) blur(2px) grayscale(.7);
+  -webkit-filter: brightness(1.4) blur(2px) grayscale(.7);
+}
+body.gameover {
+  background: #468;
+}
+
+div.topaz {
+  position: absolute;
+  text-align: center;
+  vertical-align: middle;
+  width: 14rem;
+  height: 10rem;
+  color: white;
+  line-height: 9.8rem;
+  font-size: 1.6rem;
+  border-width: 0;
+  border-image-slice: 33 fill;
+  border-image-width: 3.8rem;
+  border-image-outset: 0;
+  border-image-repeat: stretch;
+  border-image-source: url("./img/topaz.svg");
+  filter: hue-rotate(310deg) saturate(180%);
+  -webkit-filter: hue-rotate(310deg) saturate(180%);
+  font-family: Segoe UI, sans-serif;
+  font-weight: normal;
+  cursor: pointer;
+  transition: filter .5s, -webkit-filter .5s;
+}
+.turnEnd {
+  top: 42.2rem;
+  left: 115.6rem;
+  transition: filter .5s, -webkit-filter .5s;
+  transform: translateX(.5rem);
+  -webkit-transform: none;
+}
+.turnEnd.false {
+  filter: hue-rotate(310deg) grayscale(1);
+  -webkit-filter: hue-rotate(310deg) grayscale(1);
+  transition: filter .5s, -webkit-filter .5s;
+}
+div.topaz:not(.gameover):not(.false):hover {
+  filter: hue-rotate(300deg) saturate(200%) drop-shadow(0 0 3px white);
+  -webkit-filter: hue-rotate(300deg) saturate(200%) drop-shadow(0 0 3px white);
+  transition: filter 0s, -webkit-filter 0s;
+}
+div.gameover, div.turn {
+  position: absolute;
+  top: 31.5rem;
+  left: 47.5rem;
+  width: 32rem;
+  height: 32rem;
+  filter: hue-rotate(170deg) saturate(150%) contrast(150%) drop-shadow(0 0 5rem purple) drop-shadow(0 0 3rem purple);
+  -webkit-filter: hue-rotate(170deg) saturate(150%) contrast(150%) drop-shadow(0 0 5rem purple) drop-shadow(0 0 3rem purple);
+  z-index: 99999;
+  font-size: 4rem;
+  line-height: 31rem;
+  border-image-width: 8rem;
+}
+body div.turn {
+  opacity: 0;
+  cursor: auto;
+  pointer-events: none;
+  transition: opacity .7s, filter .7s, -webkit-filter .7s;
+  -webkit-filter: hue-rotate(225deg) brightness(155%) drop-shadow(0 0 5rem yellow);
+  filter: hue-rotate(225deg) brightness(155%) drop-shadow(0 0 5rem yellow);
+}
+div.turn.true {
+  opacity: 1;
+}
+div.gameover.victory {
+  -webkit-filter: hue-rotate(130deg) saturate(150%) contrast(150%) drop-shadow(0 0 5rem yellow);
+  filter: hue-rotate(130deg) saturate(150%) contrast(150%) drop-shadow(0 0 5rem yellow);
+}
